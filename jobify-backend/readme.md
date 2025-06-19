@@ -1,0 +1,1 @@
+Jobify Pro is a job application tracker that helps users manage and visualize their job search process. Users can register, login, and perform full CRUD operations on their job entries (company, position, status, type, etc.). It also includes analytics (charts), filters, and an optional email reminder system.

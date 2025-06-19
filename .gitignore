@@ -1,0 +1,15 @@
+# Node backend
+jobify-backend/node_modules/
+jobify-backend/.env
+jobify-backend/logs/
+
+# React frontend
+jobify-frontend/node_modules/
+jobify-frontend/dist/
+jobify-frontend/.env
+
+# General
+*.log
+.DS_Store
+.vscode/
+.idea/

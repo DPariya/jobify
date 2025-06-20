@@ -14,7 +14,6 @@ Built with **Node.js**, **Express**, and **MongoDB**, it supports secure authent
 - **JWT** (Authentication)
 - **bcryptjs** (Password hashing)
 - **Zod** (Request validation)
-- **Winston** (Logging)
 - **ESM (import/export)** support
 
 ---

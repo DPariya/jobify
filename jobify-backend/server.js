@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import morgan from 'morgan';
 import authRoutes from './routes/authRoutes.js';
+import jobRoute from './routes/jobRoutes.js';
 import errorHandler from './middleware/errorHandler.js';
 
 dotenv.config();
@@ -23,6 +24,8 @@ app.get('/api/health', (req, res) => {
 
 //Auth Route
 app.use('/api/auth', authRoutes);
+//Job Route
+app.use('/api/job', jobRoute);
 
 //DB Connect + server start
 const startServer = async () => {

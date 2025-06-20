@@ -1,6 +1,5 @@
 // middleware/errorHandler.js
-import CustomError from '../utils/customErrors';
-import { logError } from '../utils/logger';
+import { logError } from '../utils/logger.js';
 
 const errorHandler = (err, req, res, next) => {
   const statusCode = err.statusCode || 500;

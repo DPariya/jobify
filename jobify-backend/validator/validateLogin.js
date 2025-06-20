@@ -2,7 +2,7 @@
 // Principle: Open/Closed Principle (easy to extend schemas)
 // Principle: SRP (separates validation from controller)
 import { z } from 'zod';
-import { handleZodValidation } from '../utils/handleZodValidation';
+import { handleZodValidation } from '../utils/handleZodValidation.js';
 //zod schema for validate login
 
 const loginSchema = z.object({

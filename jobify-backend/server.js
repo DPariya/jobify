@@ -6,6 +6,7 @@ import morgan from 'morgan';
 import authRoutes from './routes/authRoutes.js';
 import jobRoute from './routes/jobRoutes.js';
 import errorHandler from './middleware/errorHandler.js';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ const app = express();
 //middleware
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser);
 app.use(morgan('dev'));
 app.use(errorHandler);
 
@@ -22,10 +24,10 @@ app.get('/api/health', (req, res) => {
   res.send('Server is up with ES6!');
 });
 
-//Auth Route
+//protected routes example
 app.use('/api/auth', authRoutes);
 //Job Route
-app.use('/api/job', jobRoute);
+app.get('/api/jobs', authMiddleware, jobRoute);
 
 //DB Connect + server start
 const startServer = async () => {

@@ -3,15 +3,8 @@
 import User from '../models/User.js';
 import jwt from 'jsonwebtoken';
 import CustomError from '../utils/CustomError.js';
-
-//create token
-
-const createToken = (user) => {
-  // Factory Pattern: Encapsulates token creation logic
-  return jwt.sign({ userId: user._id, name: user.name }, process.env.JWT_SECRET, {
-    expiresIn: '1d',
-  });
-};
+import { generateAccessToken, generateRefreshToken, verifyToken } from '../utils/jwtUtils.js';
+import bcrypt from 'bcryptjs';
 
 //Register
 export const register = async (req, res) => {
@@ -21,17 +14,23 @@ export const register = async (req, res) => {
     const existingUser = await User.findOne({ email });
 
     if (existingUser) {
-      // return res.status(400).json({ msg: 'Email already exists' });
       throw new CustomError('Email already exists', 400);
     }
 
     const user = await User.create({ name, email, password });
-    const token = createToken(user);
 
-    res.status(201).json({
-      user: { name: user.name, email: user.email },
-      token,
+    //generate access token and refresh token
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'Strict',
+      maxAge: 7 * 24 * 60 * 1000,
     });
+
+    res.status(200).json({ accessToken });
   } catch (err) {
     next(err); // Forward to errorHandler
   }
@@ -39,25 +38,52 @@ export const register = async (req, res) => {
 
 //Login
 export const login = async (req, res) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
+    //find user
+    const user = await User.findOne({ email });
+    if (!user) {
+      // return res.status(401).json({ msg: 'Invalid credentials' });
+      throw new CustomError('Invalid credentials', 401);
+    }
 
-  //find user
-  const user = await User.findOne({ email });
-  if (!user) {
-    // return res.status(401).json({ msg: 'Invalid credentials' });
-    throw new CustomError('Invalid credentials', 401);
+    //match password
+    const isMatch = await user.comparePassword(password);
+    if (!isMatch) {
+      // return res.status(401).json({ msg: 'Invalid password' });
+      throw new CustomError('Invalid password', 401);
+    }
+
+    //generate access token and refresh token
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'Strict',
+      maxAge: 7 * 24 * 60 * 1000,
+    });
+    res.status(200).json({ accessToken });
+  } catch (error) {
+    next(err); // Forward to errorHandler
   }
+};
 
-  //match password
-  const isMatch = await user.comparePassword(password);
-  if (!isMatch) {
-    // return res.status(401).json({ msg: 'Invalid password' });
-    throw new CustomError('Invalid password', 401);
+// Create refresh token
+export const refreshToken = async (req, res) => {
+  const token = req.cookies.refreshToken;
+  if (!token) return res.sendStatus(401);
+
+  try {
+    const payload = verifyToken(token, process.env.REFRESH_SECRET);
+    const newAccessToken = generateAccessToken(payload.user);
+    res.status(200).json({ accessToken: newAccessToken });
+  } catch (error) {
+    next(err); // Forward to errorHandler
   }
+};
 
-  const token = createToken(user);
-  res.status(200).json({
-    user: { name: user.name, email: user.email },
-    token,
-  });
+export const logout = (req, res) => {
+  res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'Strict', secure: true });
+  res.status(200).json({ msg: 'Logged out' });
 };

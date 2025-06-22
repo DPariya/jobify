@@ -3,21 +3,19 @@
 // Principle: SRP – Controller only handles business logic
 
 import Job from '../models/Job.js';
+import {
+  createJobService,
+  deleteJobService,
+  getJobsService,
+  updateJobService,
+} from '../services/jobService.js';
 import CustomError from '../utils/CustomError.js';
-
+import { buildJobQuery } from '../utils/buildJobQuery.js';
 // Create Job
 
 export const createJob = async (req, res, next) => {
   try {
-    const { position, company, jobLocation, jobStatus, jobType } = req.body;
-    const job = await Job.create({
-      position,
-      company,
-      jobLocation,
-      jobStatus,
-      jobType,
-      createdBy: req.user.userId, // added from authMiddleware
-    });
+    const job = await createJobService({ ...req.body, userId: req.user.userId });
 
     res.status(201).json({ job });
   } catch (error) {
@@ -29,8 +27,12 @@ export const createJob = async (req, res, next) => {
 
 export const getAllJobs = async (req, res, next) => {
   try {
-    const jobs = await Job.find({ createdBy: req.user.userId }).sort('-createdAt');
-    res.status(200).json({ jobs, count: jobs.length });
+    const result = await getJobsService({
+      userId: req.user.userId,
+      ...req.query,
+    });
+
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }
@@ -40,16 +42,11 @@ export const getAllJobs = async (req, res, next) => {
 
 export const updateJob = async (req, res, next) => {
   try {
-    const { id: jobId } = req.params;
-
-    const job = await Job.findOneAndUpdate(
-      {
-        _id: jobId,
-        createdBy: req.user.userId,
-      },
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const job = await updateJobService({
+      jobId: req.params.id,
+      userId: req.user.userId,
+      updatedData: req.body,
+    });
 
     if (!job) throw new CustomError('Job not found or not yours', 404);
     res.status(200).json({ job });
@@ -62,10 +59,9 @@ export const updateJob = async (req, res, next) => {
 
 export const deleteJob = async (req, res, next) => {
   try {
-    const { id: jobId } = req.params;
-    const job = await Job.findOneAndDelete({
-      _id: jobId,
-      createdBy: req.user.userId,
+    const job = await deleteJobService({
+      jobId: req.params.id,
+      userId: req.user.userId,
     });
 
     if (!job) throw new CustomError('Job not found or not yours', 404);

@@ -37,4 +37,11 @@ const jobSchema = new mongoose.Schema({
   },
 });
 
+jobSchema.index({ createdBy: 1 }); // fast filtering by user
+jobSchema.index({ jobStatus: 1 }); // fast status filter
+jobSchema.index({ jobType: 1 }); // fast type filter
+jobSchema.index({ createdAt: -1 }); // fast sorting
+
+// compound index for search (partial match)
+jobSchema.index({ position: 'text', company: 'text' });
 export default mongoose.model('Job', jobSchema);

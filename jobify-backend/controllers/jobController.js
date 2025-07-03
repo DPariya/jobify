@@ -70,3 +70,20 @@ export const deleteJob = async (req, res, next) => {
     next(error);
   }
 };
+
+// Suggest job
+
+export const suggestJob = async (req, res, next) => {
+  try {
+    const { query } = req.query;
+    if (!query) return res.json([]);
+
+    const regex = new RegExp('^' + query, 'i'); // prefix match
+    const jobs = await Job.find({ position: regex }).select('position -_id').limit(5);
+    const suggestions = [...new Set(jobs.map((j) => j.position))]; // remove duplicates
+
+    res.status(200).json({ suggestions });
+  } catch (error) {
+    next(error);
+  }
+};

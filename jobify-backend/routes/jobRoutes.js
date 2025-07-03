@@ -2,7 +2,13 @@
 // Pattern: Chain of Responsibility (auth → validator → controller)
 
 import express from 'express';
-import { createJob, getAllJobs, updateJob, deleteJob } from '../controllers/jobController.js';
+import {
+  createJob,
+  getAllJobs,
+  updateJob,
+  deleteJob,
+  suggestJob,
+} from '../controllers/jobController.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 import { validateJob } from '../validator/jobValidator.js';
 
@@ -17,5 +23,8 @@ router
   .route('/:id')
   .patch(authMiddleware, validateJob, updateJob)
   .delete(authMiddleware, deleteJob);
+
+// Job Suggestion
+router.route('/suggest').get(authMiddleware, suggestJob);
 
 export default router;

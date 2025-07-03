@@ -1,14 +1,19 @@
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Layout from "./components/Layout";
+import DashBoard from "./pages/DashBoard";
+
 import "./App.css";
 
 function App() {
   return (
-    <>
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <h1 className="text-4xl font-bold underline text-red-500">
-          Hello Tailwind!
-        </h1>
-      </div>
-    </>
+    <Router>
+      <Layout>
+        <Routes>
+          <Route path="/dashboard" element={<DashBoard />}></Route>
+        </Routes>
+      </Layout>
+    </Router>
   );
 }
 

@@ -3,7 +3,8 @@
   "type": "module",
   "version": "1.0.0",
   "scripts": {
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "test": "node --experimental-vm-modules ./node_modules/jest/bin/jest.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.2",
@@ -21,6 +22,8 @@
   },
   "format": "prettier --write .",
   "devDependencies": {
+    "jest": "^30.0.2",
+    "jest-environment-node": "^30.0.2",
     "nodemon": "^3.1.10",
     "prettier": "^3.5.3"
   }

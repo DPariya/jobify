@@ -2,49 +2,28 @@ import React from "react";
 import { Link } from "react-router";
 const NotFound = () => {
   return (
-    <div className="flex items-center justify-center min-h-screen bg-white py-48">
-      <div className="flex flex-col">
-        <div className="flex flex-col items-center">
-          <div className="text-indigo-500 font-bold text-7xl">404</div>
+    // <!--<html className="h-full">
+    // <body className="h-full">-->
 
-          <div className="font-bold text-3xl xl:text-7xl lg:text-6xl md:text-5xl mt-10">
-            This page does not exist
-          </div>
-
-          <div className="text-gray-400 font-medium text-sm md:text-xl lg:text-2xl mt-8">
-            The page you are looking for could not be found.
-          </div>
-        </div>
-
-        <div className="flex flex-col mt-48">
-          <div className="text-gray-400 font-bold uppercase">Continue With</div>
-
-          <div className="flex flex-col items-stretch mt-5">
-            <div
-              className="flex flex-row group px-4 py-8
-                    border-t hover:cursor-pointer
-                    transition-all duration-200 delay-100"
-            >
-              <Link to="/dashboard">
-                <div className="grow flex flex-col pl-5 pt-2">
-                  <div className="font-bold text-sm md:text-lg lg:text-xl group-hover:underline">
-                    Home Page
-                  </div>
-
-                  <div
-                    className="font-semibold text-sm md:text-md lg:text-lg
-                            text-gray-400 group-hover:text-gray-500
-                            transition-all duration-200 delay-100"
-                  >
-                    Everything starts here
-                  </div>
-                </div>
-              </Link>
-            </div>
-          </div>
+    <main className="grid min-h-full place-items-center bg-white px-6 py-24 sm:py-32 lg:px-8">
+      <div className="text-center">
+        <p className="text-base font-semibold text-indigo-600">404</p>
+        <h1 className="mt-4 text-balance text-5xl font-semibold tracking-tight text-gray-900 sm:text-7xl">
+          Page not found
+        </h1>
+        <p className="mt-6 text-pretty text-lg font-medium text-gray-500 sm:text-xl/8">
+          Sorry, we couldn’t find the page you’re looking for.
+        </p>
+        <div className="mt-10 flex items-center justify-center gap-x-6">
+          <Link
+            to="/dashboard"
+            className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Go back home
+          </Link>
         </div>
       </div>
-    </div>
+    </main>
   );
 };
 

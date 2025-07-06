@@ -14,10 +14,11 @@ export const buildJobQuery = ({ userId, status, jobType, search }) => {
   // Search
   if (search) {
     queryObject.$text = { $search: search };
-    // queryObject.$or = [
-    //   { position: { $regex: search, $options: 'i' } },
-    //   { company: { $regex: search, $options: 'i' } },
-    // ];
+    queryObject.$or = [
+      { position: { $regex: search, $options: 'i' } },
+      { company: { $regex: search, $options: 'i' } },
+      { jobLocation: { $regex: search, $options: 'i' } },
+    ];
   }
 
   return queryObject;

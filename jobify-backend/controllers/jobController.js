@@ -75,14 +75,42 @@ export const deleteJob = async (req, res, next) => {
 
 export const suggestJob = async (req, res, next) => {
   try {
-    const { query } = req.query;
-    if (!query) return res.json([]);
+    const regex = new RegExp('^' + req.query, 'i');
 
-    const regex = new RegExp('^' + query, 'i'); // prefix match
-    const jobs = await Job.find({ position: regex }).select('position -_id').limit(5);
-    const suggestions = [...new Set(jobs.map((j) => j.position))]; // remove duplicates
+    const jobs = await Job.find({
+      $or: [{ position: regex }, { company: regex }, { jobLocation: regex }],
+    })
+      .select('position company jobLocation -_id')
+      .limit(10); // increase for better Trie
+
+    const wordSet = new Set();
+    jobs.forEach((job) => {
+      wordSet.add(job.position);
+      wordSet.add(job.company);
+      wordSet.add(job.jobLocation);
+    });
+
+    const suggestions = Array.from(wordSet).filter(Boolean).slice(0, 5); // limit to 5
 
     res.status(200).json({ suggestions });
+  } catch (error) {
+    next(error);
+  }
+};
+// for auto suggestions
+export const getJobKeywords = async (req, res, next) => {
+  try {
+    const jobs = await Job.find({ createdBy: req.user.userId }).select(
+      'position company jobLocation -_id'
+    );
+    const keywords = new Set();
+    jobs.forEach((job) => {
+      keywords.add(job.position);
+      keywords.add(job.company);
+      keywords.add(job.jobLocation);
+    });
+
+    res.status(200).json({ keywords: Array.from(keywords) });
   } catch (error) {
     next(error);
   }

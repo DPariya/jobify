@@ -1,4 +1,5 @@
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { getJobKeywords } from "../api/jobApi";
 
 class TrieNode {
   constructor() {
@@ -21,7 +22,7 @@ class Trie {
     }
     curr.isEnd = true;
   }
-  getWordWithPrefix(prefix) {
+  suggest(prefix) {
     let curr = this.root;
     for (const ch of prefix.toLowerCase()) {
       if (!curr.children[ch]) return [];
@@ -32,7 +33,7 @@ class Trie {
     const dfs = (node, path) => {
       if (result.length >= 5) return; //limit suggestion
       if (node.isEnd) result.push(path);
-      for (const ch of node.children) {
+      for (const ch of Object.keys(node.children)) {
         dfs(node.children[ch], path + ch);
       }
     };
@@ -41,15 +42,23 @@ class Trie {
   }
 }
 
-export const useTrie = (initialWords) => {
-  const trie = useRef(new Trie());
+export const useJobTrie = () => {
+  const trieRef = useRef(new Trie());
+  const [loading, setLoading] = useState(true);
 
-  if (initialWords && trie.current.root && !trie.current._initialized) {
-    initialWords.forEach((word) => trie.current.insert(word));
-    trie.current._initialized = true;
-  }
+  useEffect(() => {
+    const fetchKeywords = async () => {
+      const res = await getJobKeywords();
+      res.keywords.forEach((word) => {
+        return trieRef.current.insert(word);
+      });
+      setLoading(false);
+    };
+    fetchKeywords();
+  }, []);
+
   return {
-    insert: (word) => trie.current.insert(word),
-    search: (prefix) => trie.current.getWordWithPrefix(prefix),
+    suggest: (word) => trieRef.current.suggest(word),
+    loading,
   };
 };

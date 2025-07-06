@@ -25,7 +25,6 @@ const Login = () => {
     const credentials = { email: formData.email, password: formData.password };
 
     const data = await loginUser(credentials);
-    console.log(" data ", data);
     login(data); // stores in localStorage + context
     navigate("/dashboard");
   };

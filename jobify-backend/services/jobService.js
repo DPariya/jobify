@@ -13,6 +13,7 @@ export const getJobsService = async ({
   sort = 'latest',
   page = 1,
   limit = 10,
+  position,
 }) => {
   // Build Mongo query
   const queryObject = buildJobQuery({
@@ -20,11 +21,11 @@ export const getJobsService = async ({
     status,
     jobType,
     search,
+    position,
   });
   const sortBy = sortOptions[sort] || { createdAt: -1 };
   const skip = (Number(page) - 1) * Number(limit);
   const numericLimit = Number(limit);
-
   const jobsQuery = Job.find(queryObject).sort(sortBy).skip(skip).limit(numericLimit).lean().exec();
 
   const countQuery = Job.countDocuments(queryObject).exec();

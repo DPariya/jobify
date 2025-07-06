@@ -1,6 +1,5 @@
 import React, { useState } from "react";
-import { useTrie } from "../hooks/useTrie";
-import { jobTitleList } from "../utils/jobTitleList";
+import { useJobTrie } from "../hooks/useTrie";
 
 const AutoSuggest = ({ onSearch }) => {
   const [input, setInput] = useState("");
@@ -8,19 +7,8 @@ const AutoSuggest = ({ onSearch }) => {
   const [active, setActive] = useState(0);
   const [show, setShow] = useState(false);
 
-  const { search: localSearch } = useTrie(jobTitleList);
-  const API_BASE = import.meta.env.VITE_API_URL;
+  const { suggest, loading } = useJobTrie();
 
-  const fetchBackendSuggestions = async (query) => {
-    try {
-      const res = await fetch(`${API_BASE}/api/jobs/suggest?query=${query}`);
-      const data = res.json();
-      return data;
-      // eslint-disable-next-line no-unused-vars
-    } catch (error) {
-      return [];
-    }
-  };
   const handleChange = async (e) => {
     const val = e.target.value;
     setInput(val);
@@ -30,14 +18,10 @@ const AutoSuggest = ({ onSearch }) => {
       setSuggestions([]);
       return;
     }
-    // Step 1: Frontend Trie suggestions
-    const localMatches = localSearch(val);
-    // Step 2: Backend suggestions
-    const backendsMatches = await fetchBackendSuggestions(val);
-
-    // Merge and remove duplicates
-    const merged = Array.from(new Set(...localMatches, ...backendsMatches));
-    setSuggestions(merged.slice(0, 5));
+    if (!loading) {
+      const result = suggest(val);
+      setSuggestions(result);
+    }
   };
 
   const handleKeyDown = (e) => {

@@ -2,7 +2,6 @@ const TOKEN_KEY = "accessToken";
 const USER_KEY = "user";
 
 export const setUser = (user, accessToken) => {
-  console.log("user,token in local", user, accessToken);
   localStorage.setItem(USER_KEY, JSON.stringify(user));
   localStorage.setItem(TOKEN_KEY, accessToken);
 };

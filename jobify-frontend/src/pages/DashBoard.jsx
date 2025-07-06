@@ -5,16 +5,18 @@ import { SummaryCard } from "./../components/SummaryCard";
 import FilterDropdown from "../components/FilterDropdown";
 import AutoSuggest from "../components/AutoSuggest";
 import { getJobs, searchJobs } from "../api/jobApi";
+
 const DashBoard = () => {
   const [jobs, setJobs] = useState([]);
   const [filterJobs, setFilterJobs] = useState([]);
+  const [totalJobCount, setTotalJobCount] = useState(0);
 
-  const API_BASE = import.meta.env.VITE_API_URL;
   //fetch jobs
   const fetchJobs = async () => {
     const data = await getJobs();
     setJobs(data.jobs);
     setFilterJobs(data.jobs);
+    setTotalJobCount(data.totalJobs);
   };
   useEffect(() => {
     fetchJobs();
@@ -25,9 +27,7 @@ const DashBoard = () => {
       setFilterJobs(jobs);
       return;
     }
-    // Connect this to backend or filter job list
     try {
-      // const res = await fetch(`${API_BASE}/search?position=${query}`);
       const data = await searchJobs(query);
       setFilterJobs(data.jobs);
       return;
@@ -41,7 +41,7 @@ const DashBoard = () => {
 
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
-        <SummaryCard title="Total Jobs" count={jobs.length} />
+        <SummaryCard title="Total Jobs" count={totalJobCount} />
         <SummaryCard
           title="Interviews"
           count={jobs.filter((j) => j.jobStatus === "interview").length}

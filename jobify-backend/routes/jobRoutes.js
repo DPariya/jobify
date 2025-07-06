@@ -8,6 +8,7 @@ import {
   updateJob,
   deleteJob,
   suggestJob,
+  getJobKeywords,
 } from '../controllers/jobController.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 import { validateJob } from '../validator/jobValidator.js';
@@ -26,5 +27,6 @@ router
 
 // Job Suggestion
 router.route('/suggest').get(authMiddleware, suggestJob);
+router.get('/keywords', authMiddleware, getJobKeywords);
 
 export default router;

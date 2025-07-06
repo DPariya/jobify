@@ -20,14 +20,14 @@ export const JobCard = ({ job }) => {
       <div>
         <h2 className="text-xl font-bold text-gray-800">{job.position}</h2>
         <p className="text-gray-600">
-          {job.company} • {job.location}
+          {job.company} • {job.jobLocation}
         </p>
         <span
           className={`inline-block mt-2 text-xs font-medium px-2 py-1 rounded-full ${getStatusColor(
-            job.status
+            job.jobStatus
           )}`}
         >
-          {job.status}
+          {job.jobStatus}
         </span>
       </div>
 

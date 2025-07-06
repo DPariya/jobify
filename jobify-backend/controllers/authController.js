@@ -7,7 +7,7 @@ import { generateAccessToken, generateRefreshToken, verifyToken } from '../utils
 import bcrypt from 'bcryptjs';
 
 //Register
-export const register = async (req, res) => {
+export const register = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
 
@@ -30,14 +30,14 @@ export const register = async (req, res) => {
       maxAge: 7 * 24 * 60 * 1000,
     });
 
-    res.status(200).json({ accessToken });
+    return res.status(200).json({ accessToken });
   } catch (err) {
     next(err); // Forward to errorHandler
   }
 };
 
 //Login
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
     //find user
@@ -57,33 +57,39 @@ export const login = async (req, res) => {
     //generate access token and refresh token
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
+
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      secure: true,
-      sameSite: 'Strict',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'Lax',
       maxAge: 7 * 24 * 60 * 1000,
     });
-    res.status(200).json({ accessToken });
+    // Clear password from response
+    const { password: _, ...safeUser } = user.toObject();
+    return res.status(200).json({
+      user: safeUser,
+      accessToken,
+    });
   } catch (error) {
-    next(err); // Forward to errorHandler
+    next(error); // Forward to errorHandler
   }
 };
 
 // Create refresh token
-export const refreshToken = async (req, res) => {
+export const refreshToken = async (req, res, next) => {
   const token = req.cookies.refreshToken;
   if (!token) return res.sendStatus(401);
 
   try {
     const payload = verifyToken(token, process.env.REFRESH_SECRET);
     const newAccessToken = generateAccessToken(payload.user);
-    res.status(200).json({ accessToken: newAccessToken });
+    return res.status(200).json({ accessToken: newAccessToken });
   } catch (error) {
-    next(err); // Forward to errorHandler
+    next(error); // Forward to errorHandler
   }
 };
 
-export const logout = (req, res) => {
+export const logout = (req, res, next) => {
   res.clearCookie('refreshToken', { httpOnly: true, sameSite: 'Strict', secure: true });
   res.status(200).json({ msg: 'Logged out' });
 };

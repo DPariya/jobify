@@ -15,14 +15,19 @@ const app = express();
 //middleware
 app.use(
   cors({
-    origin: 'https://localhost:5173',
-    credentials: true,
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true, // stays false since you're not using cookies
   })
 );
+
+// app.use(cors({ origin: '*', credentials: true })); //dev only
+
 app.use(express.json());
 app.use(morgan('dev'));
-app.use(errorHandler);
-app.use(cookieParser());
+app.use(express.urlencoded({ extended: true }));
+// app.use(cookieParser());
 //Health Route
 app.get('/api/health', (req, res) => {
   res.send('Server is up with ES6!');
@@ -35,6 +40,8 @@ app.use('/api/auth', authRoutes);
 
 // Job Routes (protected)
 app.use('/api/jobs', authMiddleware, jobRoute);
+
+app.use(errorHandler);
 
 //DB Connect + server start
 const startServer = async () => {

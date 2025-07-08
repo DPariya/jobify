@@ -54,16 +54,8 @@ const DashBoard = () => {
 
       {/* Search & Filters */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-        {/* <div className="flex items-center w-full sm:w-1/2 bg-white rounded-lg shadow px-4 py-2">
-          <Search className="text-gray-400 mr-2" />
-          <input
-            type="text"
-            placeholder="Search jobs"
-            className="w-full outline-none"
-          />
-        </div> */}
         <AutoSuggest onSearch={handleSearch} />
-        <FilterDropdown />
+        <FilterDropdown onSearch={handleSearch} />
       </div>
 
       {/* Job cards */}

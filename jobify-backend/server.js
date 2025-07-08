@@ -27,7 +27,7 @@ app.use(
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(express.urlencoded({ extended: true }));
-// app.use(cookieParser());
+app.use(cookieParser());
 //Health Route
 app.get('/api/health', (req, res) => {
   res.send('Server is up with ES6!');

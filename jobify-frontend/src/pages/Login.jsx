@@ -7,8 +7,8 @@ import useAuth from "./../contexts/useAuth";
 const Login = () => {
   const { login } = useAuth();
   const [formData, setFormData] = useState({
-    email: "diptipariya@gmail.com",
-    password: "123456",
+    email: "",
+    password: "",
   });
   const navigate = useNavigate();
 

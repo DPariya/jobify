@@ -33,13 +33,13 @@ const AutoSuggest = ({ onSearch }) => {
       const selected = suggestions[active] || input;
       setInput(selected);
       setShow(false);
-      onSearch(`search=${selected}`);
+      onSearch(selected);
     }
   };
   const handleClick = (word) => {
     setInput(word);
     setShow(false);
-    onSearch(`search=${word}`);
+    onSearch(word);
   };
 
   return (

@@ -4,8 +4,9 @@ const FilterDropdown = ({ onSearch }) => {
   const [searchStatus, setSearchStatus] = useState("");
 
   const handleSearch = async (e) => {
-    setSearchStatus(e.target.value);
-    onSearch(`status=${e.target.value}`);
+    const selectedStatus = e.target.value;
+    setSearchStatus(selectedStatus);
+    onSearch(selectedStatus);
   };
   return (
     <select

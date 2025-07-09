@@ -5,7 +5,7 @@ const SortDropdown = ({ onSearch }) => {
 
   const handleSearch = async (e) => {
     setSearchStatus(e.target.value);
-    onSearch(`sort=${e.target.value}`);
+    onSearch(e.target.value);
   };
   return (
     <select

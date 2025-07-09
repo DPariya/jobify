@@ -1,12 +1,7 @@
 import API from "./axiosInstance";
 
-export const searchJobs = async (query) => {
-  const res = await API.get(`/api/jobs?${query}`);
-  return res.data;
-};
-
-export const getJobs = async () => {
-  const res = await API.get("/api/jobs");
+export const getJobs = async (page = 1) => {
+  const res = await API.get(`/api/jobs?page=${page}`);
   return res.data;
 };
 

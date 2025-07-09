@@ -2,17 +2,27 @@ import React, { useEffect, useState } from "react";
 import AutoSuggest from "../components/AutoSuggest";
 import FilterDropdown from "../components/FilterDropdown";
 import SortDropdown from "../components/SortDropdown";
-import { deleteJob, getJobs, searchJobs } from "../api/jobApi";
+import { deleteJob } from "../api/jobApi";
 import { JobCard } from "../components/JobCard";
 import { toast } from "react-toastify";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
+
 import { updateJob, createJob } from "../api/jobApi";
 import EditJob from "../components/EditJob";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import Pagination from "../components/Pagination";
+import { buildJobsQuery } from "../utils/buildJobQuery";
+import API from "../api/axiosInstance";
 
 const Jobs = () => {
   const [jobs, setJobs] = useState([]);
-  const [filterJobs, setFilterJobs] = useState([]);
   const [open, setOpen] = useState(false);
+  const [filterJobs, setFilterJobs] = useState([]);
+  const [isEditing, setIsEditing] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [numOfPages, setNumOfPages] = useState(1);
+  const [totalJobs, setTotalJobs] = useState(0);
+  const [start, setStart] = useState(1);
+  const [end, setEnd] = useState(1);
   const [formData, setFormData] = useState({
     position: "",
     company: "",
@@ -20,19 +30,42 @@ const Jobs = () => {
     jobType: "full-time",
     jobStatus: "pending",
   });
-  const [isEditing, setIsEditing] = useState(true);
-
+  //filter
+  const [filters, setFilters] = useState({
+    search: "",
+    status: "",
+    sort: "",
+  });
   //fetch jobs
-  const fetchJobs = async () => {
-    const data = await getJobs();
-    setJobs(data.jobs);
-    setFilterJobs(data.jobs);
-  };
-
   useEffect(() => {
-    fetchJobs();
+    fetchJobs(currentPage);
     setIsEditing(true);
-  }, []);
+  }, [currentPage, filters]);
+
+  const fetchJobs = async (page) => {
+    try {
+      const url = buildJobsQuery(page, filters);
+      const res = await API.get(url);
+      const data = res.data;
+      setJobs(data.jobs);
+      setFilterJobs(data.jobs);
+      setNumOfPages(data.numOfPages);
+      setCurrentPage(data.currentPage);
+      setTotalJobs(data.totalJobs);
+      const PAGE_SIZE = 6; // fixed size per page (should match backend)
+
+      const startOfJob = (data.currentPage - 1) * PAGE_SIZE + 1;
+      const endOfJob = Math.min(
+        startOfJob + data.jobs.length - 1,
+        data.totalJobs
+      );
+
+      setStart(startOfJob);
+      setEnd(endOfJob);
+    } catch (err) {
+      toast.error("Failed to load jobs");
+    }
+  };
 
   const handleSearch = async (query) => {
     if (!query) {
@@ -40,27 +73,33 @@ const Jobs = () => {
       return;
     }
     try {
-      const data = await searchJobs(query);
-      setFilterJobs(data.jobs);
-      return;
+      setFilters((prev) => ({ ...prev, search: query }));
+      fetchJobs(1);
     } catch (err) {
-      toast.error("Error fetching filtered jobs");
+      console.error("Error fetching filtered jobs:", err);
     }
   };
-
+  const handleStatusChange = (status) => {
+    setFilters((prev) => ({ ...prev, status }));
+    fetchJobs(1);
+  };
+  const handleSortChange = (sort) => {
+    setFilters((prev) => ({ ...prev, sort }));
+    fetchJobs(1);
+  };
   const handleDelete = async (jobId) => {
     const confirm = window.confirm("Are you sure you want to delete this job?");
     if (!confirm) return;
 
     try {
-      const res = await deleteJob(jobId);
+      await deleteJob(jobId);
+      toast.success("Job Deleted!");
       // Re-fetch job list
       setJobs((prev) => prev.filter((job) => job._id !== jobId));
       setFilterJobs((prev) => prev.filter((job) => job._id !== jobId));
-      toast.success("Job Deleted!");
     } catch (error) {
       toast.error("Failed to delete job");
-      console.error("Failed to delete job:", error);
+      // console.error("Failed to delete job:", error);
     }
   };
   const handleSubmit = async (e) => {
@@ -77,14 +116,27 @@ const Jobs = () => {
 
       setOpen(false);
       setIsEditing(true);
-      setFormData({}); // Clear form
+      setFormData({
+        position: "",
+        company: "",
+        jobLocation: "",
+        jobType: "full-time",
+        jobStatus: "pending",
+      }); // Clear form
       fetchJobs(); // Re-fetch jobs
     } catch (error) {
       toast.error("Something went wrong.");
-      console.error("Job submit error:", error);
+      // console.error("Job submit error:", error);
     }
   };
   const handleAdd = () => {
+    setFormData({
+      position: "",
+      company: "",
+      jobLocation: "",
+      jobType: "full-time",
+      jobStatus: "pending",
+    });
     setOpen(true);
     setIsEditing(false);
   };
@@ -95,8 +147,8 @@ const Jobs = () => {
       {/* Search & Filters */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
         <AutoSuggest onSearch={handleSearch} />
-        <FilterDropdown onSearch={handleSearch} />
-        <SortDropdown onSearch={handleSearch} />
+        <FilterDropdown onSearch={handleStatusChange} />
+        <SortDropdown onSearch={handleSortChange} />
         <PlusCircleIcon onClick={handleAdd} className="w-6 h-6 text-blue-600" />
       </div>
 
@@ -145,12 +197,7 @@ const Jobs = () => {
               <button
                 onClick={() => {
                   setFormData({
-                    position: job.position,
-                    company: job.company,
-                    jobLocation: job.jobLocation,
-                    jobType: job.jobType || "full-time",
-                    jobStatus: job.jobStatus || "pending",
-                    _id: job._id,
+                    ...job,
                   }); // Set the selected job as formData
                   setIsEditing(true); // Mark editing mode
                   setOpen(true);
@@ -167,17 +214,30 @@ const Jobs = () => {
                 Delete
               </button>
             </div>
-            <EditJob
-              open={open}
-              setOpen={setOpen}
-              formData={formData}
-              setFormData={setFormData}
-              handleSubmit={handleSubmit}
-              isEditing={isEditing}
-            />
           </div>
         ))}
+        <EditJob
+          open={open}
+          setOpen={setOpen}
+          formData={formData}
+          setFormData={setFormData}
+          handleSubmit={handleSubmit}
+          isEditing={isEditing}
+        />
       </div>
+      <Pagination
+        currentPage={currentPage}
+        numOfPages={numOfPages}
+        onPageChange={(page) => {
+          if (page >= 1 && page <= numOfPages) {
+            setCurrentPage(page);
+            fetchJobs(page);
+          }
+        }}
+        totalResults={totalJobs}
+        start={start}
+        end={end}
+      />
     </>
   );
 };

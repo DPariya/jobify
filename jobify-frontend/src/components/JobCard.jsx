@@ -1,7 +1,7 @@
 import React from "react";
-import { Pencil, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
-export const JobCard = ({ job }) => {
+export const JobCard = ({ job, onDelete }) => {
   const getStatusColor = (status) => {
     switch (status) {
       case "interview":
@@ -15,6 +15,7 @@ export const JobCard = ({ job }) => {
         return "bg-gray-100 text-gray-700";
     }
   };
+
   return (
     <div className="bg-white rounded-xl shadow-md p-6 flex justify-between items-center">
       <div>
@@ -32,10 +33,10 @@ export const JobCard = ({ job }) => {
       </div>
 
       <div className="flex gap-2">
-        <button className="p-2 rounded hover:bg-gray-100">
+        {/* <button className="p-2 rounded hover:bg-gray-100">
           <Pencil size={18} />
-        </button>
-        <button className="p-2 rounded hover:bg-gray-100">
+        </button> */}
+        <button onClick={onDelete} className="p-2 rounded hover:bg-gray-100">
           <Trash2 size={18} />
         </button>
       </div>

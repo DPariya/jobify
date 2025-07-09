@@ -12,7 +12,7 @@ export const getJobsService = async ({
   search,
   sort = 'latest',
   page = 1,
-  limit = 10,
+  limit = 6,
   position,
 }) => {
   // Build Mongo query

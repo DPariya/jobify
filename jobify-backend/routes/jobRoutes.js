@@ -12,12 +12,15 @@ import {
 } from '../controllers/jobController.js';
 import authMiddleware from '../middleware/authMiddleware.js';
 import { validateJob } from '../validator/jobValidator.js';
-
+import validateJobQuery from '../middleware/validateJobQueryMiddleware.js';
 const router = express.Router();
 
 // Create & Get all jobs
 
-router.route('/').post(authMiddleware, validateJob, createJob).get(authMiddleware, getAllJobs);
+router
+  .route('/')
+  .post(authMiddleware, validateJob, createJob)
+  .get(authMiddleware, validateJobQuery, getAllJobs);
 
 // Update or Delete specific job
 router

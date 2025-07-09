@@ -123,7 +123,7 @@ const Jobs = () => {
         jobType: "full-time",
         jobStatus: "pending",
       }); // Clear form
-      fetchJobs(); // Re-fetch jobs
+      fetchJobs(currentPage); // Re-fetch jobs
     } catch (error) {
       toast.error("Something went wrong.");
       // console.error("Job submit error:", error);
@@ -154,68 +154,69 @@ const Jobs = () => {
 
       {/* Job cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filterJobs.map((job) => (
-          <div
-            key={job._id}
-            className="bg-white p-4 shadow rounded-xl border border-gray-200 relative"
-          >
-            <h3 className="text-xl font-semibold text-gray-800">
-              {job.position}
-            </h3>
-            <p className="text-gray-600">
-              {job.company} • {job.jobLocation}
-            </p>
-            <div className="flex justify-between">
-              <p className="text-gray-800">{job.jobType}</p>
-              {/* Posted On */}
-              {job?.createdAt && (
-                <p className="text-sm text-gray-500">
-                  Added on:{" "}
-                  {new Date(job?.createdAt).toLocaleDateString("en-IN", {
-                    day: "numeric",
-                    month: "short",
-                    year: "numeric",
-                  })}
-                </p>
-              )}
-            </div>
-            {/* job status */}
-            <span
-              className={`inline-block mt-2 px-3 py-1 text-sm font-medium rounded-full ${
-                job.jobStatus === "pending"
-                  ? "bg-yellow-100 text-yellow-800"
-                  : job.jobStatus === "interview"
-                  ? "bg-blue-100 text-blue-800"
-                  : "bg-red-100 text-red-800"
-              }`}
+        {filterJobs.length > 0 &&
+          filterJobs.map((job) => (
+            <div
+              key={job._id}
+              className="bg-white p-4 shadow rounded-xl border border-gray-200 relative"
             >
-              {job.jobStatus}
-            </span>
-
-            {/* Buttons */}
-            <div className="mt-4 flex justify-between">
-              <button
-                onClick={() => {
-                  setFormData({
-                    ...job,
-                  }); // Set the selected job as formData
-                  setIsEditing(true); // Mark editing mode
-                  setOpen(true);
-                }}
-                className="text-sm text-blue-600 hover:underline"
+              <h3 className="text-xl font-semibold text-gray-800">
+                {job.position}
+              </h3>
+              <p className="text-gray-600">
+                {job.company} • {job.jobLocation}
+              </p>
+              <div className="flex justify-between">
+                <p className="text-gray-800">{job.jobType}</p>
+                {/* Posted On */}
+                {job?.createdAt && (
+                  <p className="text-sm text-gray-500">
+                    Added on:{" "}
+                    {new Date(job?.createdAt).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </p>
+                )}
+              </div>
+              {/* job status */}
+              <span
+                className={`inline-block mt-2 px-3 py-1 text-sm font-medium rounded-full ${
+                  job.jobStatus === "pending"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : job.jobStatus === "interview"
+                    ? "bg-blue-100 text-blue-800"
+                    : "bg-red-100 text-red-800"
+                }`}
               >
-                Edit
-              </button>
+                {job.jobStatus}
+              </span>
 
-              <button
-                onClick={() => handleDelete(job._id)}
-                className="text-sm text-red-600 hover:underline"
-              >
-                Delete
-              </button>
+              {/* Buttons */}
+              <div className="mt-4 flex justify-between">
+                <button
+                  onClick={() => {
+                    setFormData({
+                      ...job,
+                    }); // Set the selected job as formData
+                    setIsEditing(true); // Mark editing mode
+                    setOpen(true);
+                  }}
+                  className="text-sm text-blue-600 hover:underline"
+                >
+                  Edit
+                </button>
+
+                <button
+                  onClick={() => handleDelete(job._id)}
+                  className="text-sm text-red-600 hover:underline"
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
         <EditJob
           open={open}
           setOpen={setOpen}
@@ -225,19 +226,21 @@ const Jobs = () => {
           isEditing={isEditing}
         />
       </div>
-      <Pagination
-        currentPage={currentPage}
-        numOfPages={numOfPages}
-        onPageChange={(page) => {
-          if (page >= 1 && page <= numOfPages) {
-            setCurrentPage(page);
-            fetchJobs(page);
-          }
-        }}
-        totalResults={totalJobs}
-        start={start}
-        end={end}
-      />
+      {filterJobs.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          numOfPages={numOfPages}
+          onPageChange={(page) => {
+            if (page >= 1 && page <= numOfPages) {
+              setCurrentPage(page);
+              fetchJobs(page);
+            }
+          }}
+          totalResults={totalJobs}
+          start={start}
+          end={end}
+        />
+      )}
     </>
   );
 };

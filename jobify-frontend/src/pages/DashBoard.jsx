@@ -9,7 +9,7 @@ import { buildJobsQuery } from "../utils/buildJobQuery";
 import API from "../api/axiosInstance";
 import { deleteJob } from "../api/jobApi";
 import { toast } from "react-toastify";
-
+import EmptyImage from "../assets/noFound.jpg";
 const DashBoard = () => {
   const [jobs, setJobs] = useState([]);
   const [filterJobs, setFilterJobs] = useState([]);
@@ -132,7 +132,19 @@ const DashBoard = () => {
             />
           ))
         ) : (
-          <p className="text-gray-500 text-center">No jobs found.</p>
+          <div className="col-span-full text-center p-10 bg-gray-50 rounded-xl shadow-sm">
+            <img
+              src={EmptyImage}
+              alt="No Jobs"
+              className="mx-auto h-32 w-32 mb-4 opacity-70"
+            />
+            <h3 className="text-xl font-semibold text-gray-700">
+              No Jobs Found
+            </h3>
+            <p className="text-gray-500 mt-2">
+              Try adjusting filters or search query.
+            </p>
+          </div>
         )}
       </div>
       <Pagination

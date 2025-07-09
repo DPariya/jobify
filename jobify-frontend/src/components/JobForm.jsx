@@ -7,9 +7,7 @@ const JobForm = ({ formData, setFormData, handleSubmit, isEditing }) => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => {
-      console.log("prev", prev);
       const updated = { ...prev, [name]: value };
-      console.log("Updated formData:", updated);
       return updated;
     });
   };
@@ -29,6 +27,7 @@ const JobForm = ({ formData, setFormData, handleSubmit, isEditing }) => {
           Position
         </label>
         <input
+          autoFocus
           type="text"
           name="position"
           id="position"

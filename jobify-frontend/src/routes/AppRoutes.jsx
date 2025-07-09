@@ -4,6 +4,7 @@ import Login from "../pages/Login";
 import Dashboard from "../pages/DashBoard";
 import NotFound from "../pages/NotFound";
 import Layout from "../components/Layout";
+import Jobs from "../pages/Jobs";
 const AppRoutes = () => {
   return (
     <Routes>
@@ -19,6 +20,7 @@ const AppRoutes = () => {
         }
       >
         <Route path="dashboard" element={<Dashboard />} />
+        <Route path="/jobs" element={<Jobs />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

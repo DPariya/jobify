@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { setUser } from "../utils/localStorage";
 import API from "../api/axiosInstance";
 import { useNavigate } from "react-router-dom";
-
 import { Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
@@ -30,7 +29,9 @@ const Layout = () => {
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
         <main className="flex-1 overflow-y-auto p-6">
-          <Outlet /> {/* This is where nested routes render */}
+          <div className="p-6 bg-gray-100 min-h-screen">
+            <Outlet /> {/* This is where nested routes render */}
+          </div>
         </main>
         <Footer />
       </div>

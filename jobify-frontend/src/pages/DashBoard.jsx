@@ -36,7 +36,7 @@ const DashBoard = () => {
     }
   };
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
+    <>
       <h1 className="text-3xl font-bold text-gray-800 mb-6">Dashboard</h1>
 
       {/* Summary Cards */}
@@ -66,7 +66,7 @@ const DashBoard = () => {
           <p className="text-gray-500 text-center">No jobs found.</p>
         )}
       </div>
-    </div>
+    </>
   );
 };
 export default DashBoard;

@@ -15,4 +15,17 @@ export const getJobKeywords = async () => {
   return res.data;
 };
 
-// Add more: createJob, updateJob, deleteJob
+export const createJob = async (formData) => {
+  const res = await API.post(`/api/jobs`, formData);
+  return res.data;
+};
+
+export const updateJob = async (jobId, formData) => {
+  const res = await API.patch(`/api/jobs/${jobId}`, formData);
+  return res.data;
+};
+
+export const deleteJob = async (jobId) => {
+  const res = await API.delete(`/api/jobs/${jobId}`);
+  return res.data;
+};

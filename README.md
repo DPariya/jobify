@@ -114,11 +114,7 @@ Update your `.env` files before running.
 
 ## 🙋‍♂️ Why I Built This
 
-As a full-stack developer prepping for MNC roles, I wanted a real-world app that showcases my:
-
-- Backend architecture skills
-- Frontend UX decisions
-- Ability to write clean, maintainable code
+I built Jobify to sharpen my MERN stack skills through a real-world project. It was both a learning exercise and a way to showcase clean code, solid backend design, and user-friendly UI — something I can proudly add to my portfolio.
 
 ---
 

@@ -12,10 +12,12 @@ dotenv.config();
 
 const app = express();
 
+//to allow multiple origins
+const allowedOrigins = process.env.CORS_ORIGIN?.split(',') || [];
 //middleware
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: allowedOrigins,
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true, // stays false since you're not using cookies

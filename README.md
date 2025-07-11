@@ -9,7 +9,7 @@ Welcome to **Jobify**, a full-stack web app I built to help users track their jo
 
 The app is deployed and fully functional:
 
-- 🔗 **Frontend (Vercel):** [https://jobify-frontend-beta.vercel.app/login](https://jobify-frontend.vercel.app)
+- 🔗 **Frontend (Vercel):** [https://jobify-frontend-beta.vercel.app](https://jobify-frontend-beta.vercel.app)
 - 🔗 **Backend (Render):** [https://jobify-backend-963o.onrender.com](https://jobify-backend-963o.onrender.com)
 
 > ⚠️ The backend is hosted on Render’s free tier, so the first request after inactivity might take ~50 seconds due to cold start.

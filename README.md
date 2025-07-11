@@ -5,6 +5,17 @@ Welcome to **Jobify**, a full-stack web app I built to help users track their jo
 
 ---
 
+## 🌐 Live Demo
+
+The app is deployed and fully functional:
+
+- 🔗 **Frontend (Vercel):** [https://jobify-frontend-beta.vercel.app/login](https://jobify-frontend.vercel.app)
+- 🔗 **Backend (Render):** [https://jobify-backend-963o.onrender.com](https://jobify-backend-963o.onrender.com)
+
+> ⚠️ The backend is hosted on Render’s free tier, so the first request after inactivity might take ~50 seconds due to cold start.
+
+---
+
 ## 🛠️ Tech Stack
 
 **Frontend:**
@@ -114,7 +125,8 @@ Update your `.env` files before running.
 
 ## 🙋‍♂️ Why I Built This
 
-I built Jobify to sharpen my MERN stack skills through a real-world project. It was both a learning exercise and a way to showcase clean code, solid backend design, and user-friendly UI — something I can proudly add to my portfolio.
+I built Jobify purely for practice purposes — to sharpen my MERN stack skills through a real-world project.  
+It was a fun way to level up my skills and show that I can build clean, functional, and user-friendly full-stack apps — definitely something I’m happy to have in my portfolio.
 
 ---
 

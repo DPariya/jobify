@@ -17,4 +17,5 @@ export default defineConfig({
       },
     },
   },
+  historyApiFallback: true, //enables SPA routing in local dev
 });

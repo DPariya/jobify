@@ -2,14 +2,16 @@
 import { logError } from '../utils/logger.js';
 
 const errorHandler = (err, req, res, next) => {
-  const statusCode = err.statusCode || 500;
-  const message = err.message || 'something went wrong!';
-
+  const status = err.statusCode || 500;
+  const message = err.message || 'Something went wrong';
+  const code = err.code || 'UNKNOWN_ERROR'; // ✅ Add this line
   //Log the error
 
   logError(err);
-
-  res.status(statusCode).json({ msg: message });
+  res.status(status).json({
+    msg: message,
+    code: code, // ✅ Send the custom code
+  });
 };
 
 export default errorHandler;

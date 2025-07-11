@@ -16,7 +16,6 @@ import { buildJobQuery } from '../utils/buildJobQuery.js';
 export const createJob = async (req, res, next) => {
   try {
     const job = await createJobService({ ...req.body, userId: req.user.userId });
-
     res.status(201).json({ job });
   } catch (error) {
     next(error);
